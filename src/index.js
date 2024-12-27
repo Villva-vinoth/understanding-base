@@ -17,6 +17,8 @@ app.use('/api',baseRouter);
 
 app.use(errorHandling);
 
+app.use('/',express.static('public'))
+
 app.listen(4005, () => {
     console.log('Example app listening on port 4005!')
 })
