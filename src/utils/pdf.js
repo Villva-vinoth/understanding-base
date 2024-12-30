@@ -1,12 +1,23 @@
-const puppeteer = require('puppeteer')
+const puppeteer = require("puppeteer");
 
 const generatePDF = async (params) => {
-    const browser = await puppeteer.launch({headless: true})
-    const page = await browser.newPage()
-    const html = await page.setContent(params.html)
-    const pdf = await page.pdf(params.options)
-    await browser.close()
-    return pdf
-}
+  const browser = await puppeteer.launch({ headless: true });
+  const page = await browser.newPage();
+  const html = await page.setContent(params.html);
+  const pdf = await page.pdf(params.options);
+  await browser.close();
+  return pdf;
+};
 
-module.exports = { generatePDF }
+process.on("message", async (msg) => {
+//   console.log("msg");
+  try {
+    const pdf = await generatePDF(msg);
+    process.send({ success: true, data: pdf });
+  } catch (error) {
+    //    console.log(error)
+    process.send({ success: false, data: error });
+  }
+});
+
+// module.exports = { generatePDF }
