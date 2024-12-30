@@ -1,5 +1,9 @@
 const { sequelize } = require('../../config');
-const { getAllInvoice, getInvoiceById, getInvoiceByOrderId } = require('../service/invoice.service');
+const { generateInvoice } = require('../../utils/invoicePdfHtml');
+const { generatePDF } = require('../../utils/pdf');
+const { getAllInvoice, getInvoiceById, getInvoiceByOrderId, downloadInvoice } = require('../service/invoice.service');
+const fs = require("fs");
+const path = require("path")
 module.exports={
     getAllInvoice:async ( req, res,next)=>{
         try {
@@ -29,4 +33,28 @@ module.exports={
             next(error)
         }
     },
+    downloadInvoice : async ( req, res,next)=>{
+        try{
+            const data = req.params;
+            const invoice = await downloadInvoice(data);
+           const html = generateInvoice(invoice)
+          const options= { 
+              format: "A4",
+               printBackground: true,
+                preferCSSPageSize: true
+          }
+      
+          const fsPath = path.join(__dirname, "../../../public/invoices/",`${invoice.dataValues.invoice_id}.pdf`);
+          options.path = fsPath
+
+          await generatePDF({html, options})
+          
+          fs.createReadStream(fsPath).pipe(res);
+
+        //   res.download(fsPath);
+        }
+        catch(error){
+            next(error)
+        }
+    }
 }
