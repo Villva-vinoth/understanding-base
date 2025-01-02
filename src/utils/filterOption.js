@@ -78,4 +78,73 @@ const filter = (data) => {
   return queryOpt;
 };
 
-module.exports = { pagination, filter };
+const deleteFilter = (data)=>{
+  let queryOpt = {
+    where :{[Op.or]:[]}
+  }
+
+  const { options } = data
+
+  let where = [];
+  if(options){
+      for(let i = 0;i<options.length;i++){
+        const { field ,values } = options[i];
+        if(!field || !values){
+            continue;
+        }
+        where.push(
+          {
+          [field]:{
+            [Op.in]:values
+          }
+        })
+  }
+}
+
+
+  // console.log('where',where)
+
+  if(where.length !== 0){
+      queryOpt.where[Op.or] = where
+  }
+
+  return queryOpt
+
+
+  // NOTE : BE carefull while handles delete operations if suppose if you misconfigure the where condition 
+  // it will delete all the data from the table established where 1=1 condition which is not proper
+}
+
+const updateFilter = (data) =>{
+  console.log("Data :",data)
+
+  const { options } = data
+  let queryOpt ={ 
+    where :{[Op.or]:[]},
+
+  }
+  let where = [];
+  if(options){
+      for(let i = 0;i<options.length;i++){
+        const { field ,values } = options[i];
+        if(!field || !values){
+            continue;
+        }
+        where.push(
+          {
+          [field]:{
+            [Op.in]:values
+          }
+        })
+  }
+
+}
+ if(where.length !== 0){
+      queryOpt.where[Op.or] = where
+  }
+
+  return queryOpt
+
+}
+
+module.exports = { pagination, filter, deleteFilter ,updateFilter };

@@ -2,6 +2,7 @@ const bookingModel = require("../../model/booking.model");
 const { transactions } = require("../../utils/transaction");
 const { bookingValidate } = require("../../utils/validate");
 const { validationError } = require("../../utils/customError");
+const { deleteFilter, updateFilter } = require("../../utils/filterOption");
 module.exports = {
   getAllBookings: async () => {
     return transactions(async (t) => {
@@ -9,7 +10,7 @@ module.exports = {
         transactions: t,
         logging: console.log,
       });
-      console.log(bookings);
+      // console.log(bookings);
       return bookings;
     });
   },
@@ -69,5 +70,22 @@ module.exports = {
       }
       return result;    
     });
+  },
+  deleteBulk : async (data)=>{
+    // console.log("data",data)
+    const deleteFilters = deleteFilter(data)
+    // console.log("df",deleteFilters)
+      return transactions(async (t)=>{
+        const deleteBookings = await bookingModel.destroy({...deleteFilters,transactions:t,logging:console.log})
+        return deleteBookings
+      })
+  },
+  updateBulk : async (data)=>{
+    const updateFilters = updateFilter(data);
+    console.log("uf",updateFilters,data.update_options)
+    return transactions(async (t)=>{
+      const booking = await bookingModel.update(data.update_options,{...updateFilters,paranoid:false,transactions:t,logging:console.log}) 
+      return booking
+    })
   },
 };

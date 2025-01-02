@@ -28,13 +28,23 @@ const booking = sequelize.define('booking',
         timestamps:true,
         createdAt:'created_at',
         updatedAt:'updated_at',
+        paranoid:true,
+        deletedAt:'deleted_at',
         hooks:{
            afterCreate: async (value,options)=>{
             if(value.id){
                 value.booking_id = 'BOOK-'+String(value.id).padStart(5, '0')
                 await value.save({transaction: options.transaction})
             }
+           },
+           afterBulkCreate: async (values,options)=>{
+            for(const value of values){
+                if(value.id){
+                    value.booking_id = 'BOOK-'+String(value.id).padStart(5, '0')
+                    await value.save({transaction: options.transaction})
+                }
            }
+        }
         }
 
     })

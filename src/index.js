@@ -5,9 +5,10 @@ const baseRouter = require('./api/router/baseRouter')
 const { errorHandling } = require('./utils/ErrorHandler')
 
 app.use(express.json())
-
+app.use(express.urlencoded({ extended: true }))
 
 app.get('/', (req, res) => {
+    console.log(req.body)
     res.send('Hello World!')
 })
 
