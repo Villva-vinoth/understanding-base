@@ -66,26 +66,26 @@ module.exports = {
 
       forked.send({ html, options });
 
-      forked.on("message", (datas) => {
+      forked.on("message",  (datas) => {
         if (datas.success) {
           // res.setHeader("Content-Type", "application/pdf");
           // res.setHeader("Content-Disposition", `attachment; filename=${invoice.dataValues.invoice_id}.pdf`);
-          fs.createReadStream(options.path).pipe(res);
+           fs.createReadStream(options.path).pipe(res);
         } else {
           next(datas.error);
         }
-        // fs.createReadStream(fspath).pipe(res);
-
-        // res.send(datas)
+    
+    // res.send(datas)
       });
-
+    
       forked.on("error", (error) => {
-        console.error(error);
-        next(error);
-      });
-
-      //   await generatePDF({html, options})
-
+            console.error(error);
+            next(error);
+          });
+        
+        // await generatePDF({html, options})
+        
+        // fs.createReadStream(fsPath).pipe(res);
       //   res.download(fsPath);
     } catch (error) {
       next(error);

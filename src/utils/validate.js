@@ -32,4 +32,15 @@ const orderValidate = joi.object({
     })
 }).with('amount','items').with('user_id','ordered_address')
 
-module.exports = { userValidate, orderValidate }
+const bookingValidate = joi.object({
+    name:joi.string().required().min(5).messages({
+        'any.required':'name is required!',
+        'string.empty':'name field cannot be empty!'
+    }),
+    phone_number:joi.string().required().messages({
+        'any.required':'phone_number is required!',
+        'string.empty':'phone_number field cannot be empty!'
+    })
+})
+
+module.exports = { userValidate, orderValidate ,bookingValidate }

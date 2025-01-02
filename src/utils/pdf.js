@@ -9,13 +9,11 @@ const generatePDF = async (params) => {
   return pdf;
 };
 
-process.on("message", async (msg) => {
-//   console.log("msg");
+process.on("message", (msg) => {
   try {
-    const pdf = await generatePDF(msg);
+    const pdf = generatePDF(msg);
     process.send({ success: true, data: pdf });
   } catch (error) {
-    //    console.log(error)
     process.send({ success: false, data: error });
   }
 });

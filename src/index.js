@@ -19,7 +19,20 @@ app.use(errorHandling);
 
 app.use('/',express.static('public'))
 
-app.listen(4005, () => {
+const server = app.listen(4005, () => {
     console.log('Example app listening on port 4005!')
+})
+
+
+process.on('SIGINT', () => {
+    console.log('SIGINT signal received. Goodbye!')
+    server.close(()=>{
+        console.log('All request finished and server closed')
+        process.exit(0)
+    })
+})
+process.on('SIGTERM', () => {
+    console.log('SIGTERM signal received. Goodbye!')
+    process.exit(0)
 })
 
