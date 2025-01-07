@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const { initialize } = require('./config/index')
 const baseRouter = require('./api/router/baseRouter')
-const { errorHandling } = require('./utils/ErrorHandler')
+const { errorHandling } = require('./utils/ErrorHandler');
+const { initializeRedis } = require('./config/redisClient');
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
@@ -13,6 +14,7 @@ app.get('/', (req, res) => {
 })
 
 initialize()
+initializeRedis()
 
 app.use('/api',baseRouter);
 

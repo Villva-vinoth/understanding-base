@@ -39,7 +39,8 @@ const bookingValidate = joi.object({
     }),
     phone_number:joi.string().required().messages({
         'any.required':'phone_number is required!',
-        'string.empty':'phone_number field cannot be empty!'
+        'string.empty':'phone_number field cannot be empty!',
+        'string.valid':'phone_number is not valid!'
     })
 })
 

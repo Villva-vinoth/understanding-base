@@ -8,11 +8,13 @@ const { NotFoundError } = require("../../utils/customError");
 module.exports = {
   getAllInvoice: (data) => {
     const pg = filter(data);
+    // get pg:
     return transactions(async (t) => {
       const invoices = await invoiceModel.findAndCountAll(pg, {
         transaction: t,
       });
       return invoices;
+      // set 
     });
   },
   getInvoiceById: (data) => {

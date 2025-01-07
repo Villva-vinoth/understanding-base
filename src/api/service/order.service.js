@@ -6,7 +6,7 @@ const { filter } = require("../../utils/filterOption");
 const { sequelize } = require("../../config");
 const userModel = require("../../model/user.model");
 const invoiceModel = require("../../model/invoice.model");
-
+const {client} = require("../../config/redisClient")
 module.exports = {
   createOrders: async (data) => {
     return transactions(async (t)=>{
@@ -26,6 +26,11 @@ module.exports = {
   },
   getOrders: async (data) => {
     const pg =  filter(data);
+    // get pg:  
+    // const page = `orders:page:${pg.offset}`;  
+    // if(page){
+    //  const orders =  await client.get(page)
+    // }
     return await transactions(async (t) => {
       const orders = await orderModel.findAndCountAll(
        pg,
@@ -34,6 +39,15 @@ module.exports = {
     });
   },
   getOrderById: async (data) => {
+    // get order 
+    const page = `orderId${data.id}`;  
+     const order =  await client.get(page);
+     if(order){
+      // console.log("get in redis")
+        const or = JSON.parse(order)
+        return or
+     }
+    //  console.log("get in db")
     return await transactions(async (t) => {
       const order = await orderModel.findOne(
         {where:{order_id:data.id},
@@ -46,6 +60,9 @@ module.exports = {
             throw new Error("Order Not Found",404)
         }
         // console.log(order)
+
+        await client.set(page,JSON.stringify(order),{EX:30})
+
       return order;
     });
   },
